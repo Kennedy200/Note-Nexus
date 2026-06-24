@@ -13,6 +13,7 @@ class User(Base):
     phone_number = Column(String, nullable=True)
     profile_picture = Column(String, nullable=True)
     bio = Column(Text, nullable=True)
+    is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     transactions = relationship("Transaction", back_populates="owner")
@@ -21,6 +22,15 @@ class User(Base):
     airtime_redemptions = relationship("AirtimeRedemption", back_populates="user")
     ratings = relationship("Rating", back_populates="user")
     search_history = relationship("SearchHistory", back_populates="user")
+
+class Admin(Base):
+    __tablename__ = "admins"
+    id = Column(Integer, primary_key=True, index=True)
+    full_name = Column(String, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    role = Column(String, default="admin")
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 class Note(Base):
     __tablename__ = "notes"
@@ -76,7 +86,7 @@ class AirtimeRedemption(Base):
     coins_spent = Column(Integer)
     status = Column(String, default="PENDING")
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    
+
     user = relationship("User", back_populates="airtime_redemptions")
 
 class Rating(Base):
@@ -84,7 +94,7 @@ class Rating(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     note_id = Column(Integer, ForeignKey("notes.id"))
-    rating = Column(Integer)  # 1-5 stars
+    rating = Column(Integer)
     review = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 

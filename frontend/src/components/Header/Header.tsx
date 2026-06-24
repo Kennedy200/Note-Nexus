@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ChevronRight, Zap, HelpCircle, MessageSquare, Info, Sparkles, FileText } from 'lucide-react';
+import { Menu, X, ChevronRight, Zap, HelpCircle, MessageSquare, Info, Sparkles, FileText, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Detect scroll to change header background
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -25,19 +24,19 @@ const Header: React.FC = () => {
   return (
     <>
       {/* --- NAVIGATION BAR --- */}
-      <header 
+      <header
         className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          isScrolled 
-            ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-blue-500/5 py-3' 
+          isScrolled
+            ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-blue-500/5 py-3'
             : 'bg-transparent py-6'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            
+
             {/* Left: Mobile Toggle & Logo */}
             <div className="flex items-center gap-4">
-              <button 
+              <button
                 onClick={() => setIsSidebarOpen(true)}
                 className="lg:hidden p-2.5 text-gray-700 hover:bg-gray-100 rounded-2xl transition-all active:scale-90"
               >
@@ -46,10 +45,10 @@ const Header: React.FC = () => {
 
               <Link to="/" className="flex items-center gap-2.5 group">
                 <div className="relative">
-                  <img 
-                    src="/logo.png" 
-                    alt="NoteNexus" 
-                    className="h-10 w-10 object-contain transition-transform duration-500 group-hover:rotate-[10deg]" 
+                  <img
+                    src="/logo.png"
+                    alt="NoteNexus"
+                    className="h-10 w-10 object-contain transition-transform duration-500 group-hover:rotate-[10deg]"
                   />
                   <div className="absolute inset-0 bg-blue-400 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
                 </div>
@@ -62,25 +61,35 @@ const Header: React.FC = () => {
             {/* Center: Desktop Links */}
             <nav className="hidden lg:flex items-center gap-10">
               {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-[15px] font-bold text-gray-600 hover:text-blue-600 transition-colors relative group"
-                >
-                  {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-                </a>
-              ))}
+              <a
+                key={link.name}
+                href={link.href}
+                className="text-[15px] font-bold text-gray-600 hover:text-blue-600 transition-colors relative group"
+              >
+                {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+            ))}
             </nav>
 
-            {/* Right: Documentation Button (Desktop Only) */}
-            <div className="flex items-center">
-              <Link 
-                to="/documentation" 
-                className="hidden md:flex items-center gap-2 bg-gray-100 text-gray-900 px-6 py-3 rounded-2xl font-black text-sm hover:bg-gray-200 transition-all duration-300 shadow-sm border border-gray-200"
+            {/* Right: Buttons (Desktop Only) */}
+            <div className="hidden md:flex items-center gap-3">
+              {/* Documentation Button */}
+              <Link
+                to="/documentation"
+                className="flex items-center gap-2 bg-gray-100 text-gray-900 px-5 py-3 rounded-2xl font-black text-sm hover:bg-gray-200 transition-all duration-300 shadow-sm border border-gray-200"
               >
                 <FileText className="w-4 h-4" />
                 Documentation
+              </Link>
+
+              {/* Admin Button */}
+              <Link
+                to="/admin/login"
+                className="flex items-center gap-2 bg-gray-900 text-white px-5 py-3 rounded-2xl font-black text-sm hover:bg-blue-700 transition-all duration-300 shadow-sm"
+              >
+                <Shield className="w-4 h-4" />
+                Admin
               </Link>
             </div>
           </div>
@@ -88,15 +97,15 @@ const Header: React.FC = () => {
       </header>
 
       {/* --- MOBILE SIDEBAR DRAWER --- */}
-      <div 
+      <div
         className={`fixed inset-0 bg-gray-900/40 backdrop-blur-md z-[60] transition-opacity duration-500 ${
           isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsSidebarOpen(false)}
       />
 
-      <aside 
-        className={`fixed top-0 left-0 h-full w-[300px] bg-white z-[70] shadow-2xl transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) transform ${
+      <aside
+        className={`fixed top-0 left-0 h-full w-[300px] bg-white z-[70] shadow-2xl transition-transform duration-500 transform ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -106,7 +115,7 @@ const Header: React.FC = () => {
               <img src="/logo.png" alt="Logo" className="h-8 w-8" />
               <span className="font-black text-xl tracking-tighter">NoteNexus</span>
             </div>
-            <button 
+            <button
               onClick={() => setIsSidebarOpen(false)}
               className="p-2 text-gray-400 hover:bg-gray-100 rounded-xl transition-all"
             >
@@ -131,15 +140,53 @@ const Header: React.FC = () => {
                 <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
             ))}
+
+            {/* Documentation in mobile sidebar */}
+            <Link
+              to="/documentation"
+              onClick={() => setIsSidebarOpen(false)}
+              className="flex items-center justify-between p-4 rounded-2xl text-gray-700 font-bold hover:bg-blue-50 hover:text-blue-600 transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                  <FileText className="w-5 h-5 opacity-70 group-hover:text-blue-600" />
+                </div>
+                Documentation
+              </div>
+              <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Link>
+
+            {/* Admin Portal in mobile sidebar */}
+            <Link
+              to="/admin/login"
+              onClick={() => setIsSidebarOpen(false)}
+              className="flex items-center justify-between p-4 rounded-2xl text-gray-700 font-bold hover:bg-blue-50 hover:text-blue-600 transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center group-hover:bg-blue-700 transition-colors">
+                  <Shield className="w-5 h-5 text-white" />
+                </div>
+                Admin Portal
+              </div>
+              <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Link>
           </nav>
 
-          <div className="p-6 border-t border-gray-50 space-y-4">
-            <Link to="/login" className="w-full py-4 text-gray-900 font-black border-2 border-gray-100 rounded-2xl hover:bg-gray-50 transition-all">
+          <div className="p-6 border-t border-gray-50 space-y-3">
+            <Link
+              to="/login"
+              onClick={() => setIsSidebarOpen(false)}
+              className="block w-full py-4 text-center text-gray-900 font-black border-2 border-gray-100 rounded-2xl hover:bg-gray-50 transition-all"
+            >
               Sign In
             </Link>
-            <button className="w-full py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg shadow-blue-100">
+            <Link
+              to="/signup"
+              onClick={() => setIsSidebarOpen(false)}
+              className="block w-full py-4 text-center bg-blue-600 text-white font-black rounded-2xl shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
+            >
               Create Account
-            </button>
+            </Link>
           </div>
         </div>
       </aside>
@@ -157,40 +204,46 @@ const Header: React.FC = () => {
             <Sparkles className="w-4 h-4 fill-blue-700" />
             <span>The Academic Hub for Caleb University</span>
           </div>
-          
+
           <h1 className="text-5xl md:text-8xl font-[1000] text-gray-900 tracking-tight leading-[0.95] mb-8">
             Notes Shared. <br />
             <span className="text-blue-600">Rewards Earned.</span>
           </h1>
-          
+
           <p className="max-w-2xl mx-auto text-lg md:text-2xl text-gray-500 font-medium leading-relaxed mb-12">
-            The premium collaborative platform for students to upload notes, 
+            The premium collaborative platform for students to upload notes,
             earn NoteCoins, and dominate their exams together.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-            <Link to="/signup" className="w-full sm:w-auto px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-black text-xl hover:bg-blue-600 hover:shadow-2xl hover:shadow-blue-200 transition-all duration-500 flex items-center justify-center">
+            <Link
+              to="/signup"
+              className="w-full sm:w-auto px-10 py-5 bg-gray-900 text-white rounded-[2rem] font-black text-xl hover:bg-blue-600 hover:shadow-2xl hover:shadow-blue-200 transition-all duration-500 flex items-center justify-center"
+            >
               Get Started
             </Link>
-            <Link to="/login" className="w-full sm:w-auto px-10 py-5 bg-white text-gray-900 border-2 border-gray-100 rounded-[2rem] font-black text-xl hover:bg-gray-50 transition-all duration-300 shadow-sm">
+            <Link
+              to="/login"
+              className="w-full sm:w-auto px-10 py-5 bg-white text-gray-900 border-2 border-gray-100 rounded-4xl font-black text-xl hover:bg-gray-50 transition-all duration-300 shadow-sm"
+            >
               Sign In
             </Link>
           </div>
 
           {/* Social Proof / Mini Stats */}
           <div className="mt-20 pt-10 border-t border-gray-100 flex flex-wrap justify-center gap-12 opacity-60 grayscale hover:grayscale-0 transition-all duration-700">
-             <div className="flex flex-col">
-                <span className="text-2xl font-black text-gray-900 uppercase">1,200+</span>
-                <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">Resources</span>
-             </div>
-             <div className="flex flex-col">
-                <span className="text-2xl font-black text-gray-900 uppercase">500+</span>
-                <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">Students</span>
-             </div>
-             <div className="flex flex-col">
-                <span className="text-2xl font-black text-gray-900 uppercase">100%</span>
-                <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">Secure</span>
-             </div>
+            <div className="flex flex-col">
+              <span className="text-2xl font-black text-gray-900 uppercase">1,200+</span>
+              <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">Resources</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-2xl font-black text-gray-900 uppercase">500+</span>
+              <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">Students</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-2xl font-black text-gray-900 uppercase">100%</span>
+              <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">Secure</span>
+            </div>
           </div>
         </div>
       </section>
