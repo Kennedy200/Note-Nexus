@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen, Coins, Upload, FileText, ShoppingBag, LogOut, User, Settings } from 'lucide-react';
+import { BookOpen, Coins, Upload, FileText, ShoppingBag, LogOut, User, Settings, Trophy } from 'lucide-react';
 
 const DashboardLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -42,6 +42,7 @@ const DashboardLayout: React.FC = () => {
   { to: '/dashboard/my-purchases', icon: ShoppingBag, label: 'My Purchases' },
   { to: '/dashboard/wallet', icon: Coins, label: 'Wallet' },
   { to: '/dashboard/profile', icon: Settings, label: 'Profile' },
+  { to: '/dashboard/leaderboard', icon: Trophy, label: 'Leaderboard' }
 ];
 
   return (

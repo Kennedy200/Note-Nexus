@@ -10,6 +10,7 @@ import HowItWorks from './components/HowItWorks/HowItWorks';
 import FAQ from './components/FAQ/FAQ';
 import Footer from './components/Footer/Footer';
 import Documentation from './pages/Documentation/Documentation';
+import LeaderboardPreview from './components/Leaderboard/LeaderboardPreview'
 
 // Auth pages
 import Signup from './pages/Auth/Signup';
@@ -33,6 +34,7 @@ import AdminUsers from './pages/Admin/AdminUsers';
 import AdminNotes from './pages/Admin/AdminNotes';
 import AdminTransactions from './pages/Admin/AdminTransactions';
 import AdminAirtime from './pages/Admin/AdminAirtime';
+import LeaderboardPage from './pages/Dashboard/LeaderboardPage';
 
 // Dashboard Home Component
 const DashboardHome = () => {
@@ -175,7 +177,7 @@ const App: React.FC = () => {
         <div className="min-h-screen bg-white">
           <Routes>
             {/* Landing Page */}
-            <Route path="/" element={<><Header /><About /><Features /><HowItWorks /><FAQ /><Footer /></>} />
+            <Route path="/" element={<><Header /><About /><Features /><HowItWorks /><LeaderboardPreview /><FAQ /><Footer /></>} />
             <Route path="/documentation" element={<Documentation />} />
 
             {/* Auth Routes */}
@@ -184,6 +186,7 @@ const App: React.FC = () => {
 
             {/* Student Dashboard Routes */}
             <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route path="leaderboard" element={<LeaderboardPage />} />
               <Route index element={<DashboardHome />} />
               <Route path="browse" element={<BrowseNotes />} />
               <Route path="upload" element={<UploadNote />} />

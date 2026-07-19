@@ -720,6 +720,85 @@ def seed_notes(db: Session = Depends(database.get_db)):
     db.commit()
     return {"message": "Database seeded with 12 notes"}
 
+# ============================================================
+# LEADERBOARD ROUTES
+# ============================================================
+@app.get("/api/leaderboard/coins")
+def get_coins_leaderboard(db: Session = Depends(database.get_db)):
+    """Top 10 users by NoteCoins balance"""
+    users = db.query(models.User).filter(
+        models.User.is_active == True
+    ).order_by(desc(models.User.coin_balance)).limit(10).all()
+    
+    result = []
+    for index, user in enumerate(users):
+        uploads = db.query(models.Note).filter(
+            models.Note.uploader_id == user.id,
+            models.Note.is_approved == True
+        ).count()
+        purchases = db.query(models.Purchase).filter(
+            models.Purchase.user_id == user.id
+        ).count()
+        total_earned = db.query(func.sum(models.Transaction.amount)).filter(
+            models.Transaction.user_id == user.id,
+            models.Transaction.amount > 0
+        ).scalar() or 0
+        result.append({
+            "rank": index + 1,
+            "id": user.id,
+            "full_name": user.full_name,
+            "coin_balance": user.coin_balance,
+            "total_uploads": uploads,
+            "total_purchases": purchases,
+            "total_earned": int(total_earned),
+            "joined": user.created_at
+        })
+    return result
+
+@app.get("/api/leaderboard/notes")
+def get_notes_leaderboard(db: Session = Depends(database.get_db)):
+    """Top 10 users by number of approved notes uploaded"""
+    from sqlalchemy import case
+    
+    users = db.query(models.User).filter(
+        models.User.is_active == True
+    ).all()
+    
+    result = []
+    for user in users:
+        uploads = db.query(models.Note).filter(
+            models.Note.uploader_id == user.id,
+            models.Note.is_approved == True
+        ).count()
+        if uploads == 0:
+            continue
+        total_downloads = db.query(func.sum(models.Note.download_count)).filter(
+            models.Note.uploader_id == user.id,
+            models.Note.is_approved == True
+        ).scalar() or 0
+        total_earned = db.query(func.sum(models.Transaction.amount)).filter(
+            models.Transaction.user_id == user.id,
+            models.Transaction.transaction_type == "SALES_REWARD"
+        ).scalar() or 0
+        result.append({
+            "id": user.id,
+            "full_name": user.full_name,
+            "total_uploads": uploads,
+            "total_downloads": int(total_downloads),
+            "total_earned_from_sales": int(total_earned),
+            "coin_balance": user.coin_balance,
+            "joined": user.created_at
+        })
+    
+    # Sort by uploads descending
+    result.sort(key=lambda x: x["total_uploads"], reverse=True)
+    
+    # Add rank
+    for index, item in enumerate(result[:10]):
+        item["rank"] = index + 1
+    
+    return result[:10]
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
